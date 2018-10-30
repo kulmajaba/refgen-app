@@ -2,30 +2,63 @@ import { Action, ActionCreator, Dispatch, Reducer } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 
 export type ScannerState = {
-  loading: boolean,
+  isBusy: boolean,
+  scanResultData: string | undefined,
+  hasCameraPermission: boolean | undefined,
   error: Error | undefined
 };
 
 const defaultState: ScannerState = {
-  loading: false,
+  isBusy: false,
+  scanResultData: undefined,
+  hasCameraPermission: undefined,
   error: undefined
 };
 
 // TS 'typeof' returns the exact value as type for implicitly typed 'const'
-const SCAN = 'refgen-app/scanner/SCAN';
+const CAMERA_PERMISSION = 'refgen-app/scanner/CAMERA_PERMISSION';
+const SCAN_RESULT_CANCEL = 'refgen-app/scanner/SCAN_RESULT_CANCEL';
+const SCAN_SUCCESS = 'refgen-app/scanner/SCAN_SUCCESS';
 
-interface scanStartAction extends Action {
-  type: typeof SCAN;
+interface cameraPermissionAction extends Action {
+  type: typeof CAMERA_PERMISSION;
+  payload: boolean;
 };
 
-type KnownAction = scanStartAction;
+interface scanResultCancelAction extends Action {
+  type: typeof SCAN_RESULT_CANCEL;
+}
+
+interface scanSuccessAction extends Action {
+  type: typeof SCAN_SUCCESS;
+  payload: string;
+};
+
+type KnownAction = cameraPermissionAction | scanResultCancelAction | scanSuccessAction;
 
 export default function reducer (state: ScannerState = defaultState, action: KnownAction): ScannerState {
   switch (action.type) {
-    case SCAN: {
+    case CAMERA_PERMISSION: {
       return {
         ...state,
-        loading: true
+        hasCameraPermission: action.payload
+      };
+    }
+    case SCAN_RESULT_CANCEL: {
+      return {
+        ...state,
+        isBusy: false
+      };
+    }
+    case SCAN_SUCCESS: {
+      if (state.isBusy) {
+        return state;
+      }
+
+      return {
+        ...state,
+        isBusy: true,
+        scanResultData: action.payload
       };
     }
     default: {
@@ -34,8 +67,23 @@ export default function reducer (state: ScannerState = defaultState, action: Kno
   }
 }
 
-export function startScan() {
+export function cameraPermission(payload: boolean): cameraPermissionAction {
   return {
-    type: SCAN
+    type: CAMERA_PERMISSION,
+    payload
+  };
+}
+
+export function scanResultCancel(): scanResultCancelAction {
+  return {
+    type: SCAN_RESULT_CANCEL
+  };
+}
+
+// Only use scanned data, also available type and target (target exists on Android, not sure about iOS)
+export function scanSuccess(payload: { type: string, data: string }): scanSuccessAction {
+  return {
+    type: SCAN_SUCCESS,
+    payload: payload.data
   };
 }
