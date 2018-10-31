@@ -5,7 +5,7 @@ import { Dispatch, bindActionCreators } from 'redux';
 import { BarCodeScanner } from 'expo';
 
 import { ApplicationState } from '../store';
-import { scanSuccess, scanResultCancel } from '../store/scanner';
+import { BarCodeScannerResult, scanSuccess, scanResultCancel } from '../store/scanner';
 
 type StateProps = {
   isBusy: boolean,
@@ -20,47 +20,53 @@ type DispatchProps = {
 
 type Props = Readonly<StateProps & DispatchProps>;
 
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
 class ScannerView extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     const { scanResultData } = this.props;
 
-    if (scanResultData !== undefined && !prevProps.isBusy && scanResultData !== prevProps.scanResultData) {
+    if (scanResultData !== undefined && !prevProps.isBusy) {
       Alert.alert(
         'Barcode scanned',
         `A barcode with the data ${scanResultData} has been scanned. Search this?`,
         [
-          { text: 'Cancel', onPress: () => this.props.scanResultCancel(), style: 'cancel' },
+          { text: 'Cancel', onPress: () => this._alertCancelPressed(), style: 'cancel' },
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],
-        { onDismiss: () => this.props.scanResultCancel() }
+        { onDismiss: () => this._alertCancelPressed() }
       );
     }
   }
 
-  // TODO: Set more sensible scanning interval, now leads to a bit of a race condition with the alerts
   render() {
-    const { hasCameraPermission } = this.props;
+    const { hasCameraPermission, isBusy } = this.props;
 
     if (hasCameraPermission !== true) { // Should never happen
       console.warn("ScannerView: access to camera was not checked before.");
       return <Text>No access to camera</Text>;
     }
-
-    const { scanResultData } = this.props;
     
     return (
       <View style={{ flex: 1 }}>
         <BarCodeScanner
-          onBarCodeRead={(res: { type: string; data: string; }) => this._handleBarCodeScanned(res)}
+          onBarCodeRead={
+            isBusy ?
+            undefined :
+            (res: BarCodeScannerResult) => {
+              console.log(`Barcode ${res.data} read`)
+              this.props.scanSuccess(res)
+            }
+          }
           style={StyleSheet.absoluteFill}
         />
       </View>
     );
   }
 
-  // TODO: Fix BarCodeScannerCallback type in DefinitelyTyped repo, check target in iOS
-  _handleBarCodeScanned(res: { type: string, data: string }) {
-    this.props.scanSuccess(res);
+  async _alertCancelPressed() {
+    await delay(1000);
+    this.props.scanResultCancel();
   }
 }
 

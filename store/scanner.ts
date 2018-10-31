@@ -1,6 +1,11 @@
 import { Action, ActionCreator, Dispatch, Reducer } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 
+export type BarCodeScannerResult = {
+  type: string,
+  data: string
+};
+
 export type ScannerState = {
   isBusy: boolean,
   scanResultData: string | undefined,
@@ -81,7 +86,8 @@ export function scanResultCancel(): scanResultCancelAction {
 }
 
 // Only use scanned data, also available type and target (target exists on Android, not sure about iOS)
-export function scanSuccess(payload: { type: string, data: string }): scanSuccessAction {
+// TODO: Fix BarCodeScannerCallback type in DefinitelyTyped repo, check target in iOS
+export function scanSuccess(payload: BarCodeScannerResult): scanSuccessAction {
   return {
     type: SCAN_SUCCESS,
     payload: payload.data
