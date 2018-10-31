@@ -1,17 +1,16 @@
-import { Action, ActionCreator, Dispatch, Reducer } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { Action } from 'redux';
 
 export type BarCodeScannerResult = {
   type: string,
   data: string
 };
 
-export type ScannerState = {
+export type ScannerState = Readonly<{
   isBusy: boolean,
   scanResultData: string | undefined,
   hasCameraPermission: boolean | undefined,
   error: Error | undefined
-};
+}>;
 
 const defaultState: ScannerState = {
   isBusy: false,
@@ -25,21 +24,21 @@ const CAMERA_PERMISSION = 'refgen-app/scanner/CAMERA_PERMISSION';
 const SCAN_RESULT_CANCEL = 'refgen-app/scanner/SCAN_RESULT_CANCEL';
 const SCAN_SUCCESS = 'refgen-app/scanner/SCAN_SUCCESS';
 
-interface cameraPermissionAction extends Action {
+interface CameraPermissionAction extends Action {
   type: typeof CAMERA_PERMISSION;
   payload: boolean;
 };
 
-interface scanResultCancelAction extends Action {
+interface ScanResultCancelAction extends Action {
   type: typeof SCAN_RESULT_CANCEL;
 }
 
-interface scanSuccessAction extends Action {
+interface ScanSuccessAction extends Action {
   type: typeof SCAN_SUCCESS;
   payload: string;
 };
 
-type KnownAction = cameraPermissionAction | scanResultCancelAction | scanSuccessAction;
+type KnownAction = CameraPermissionAction | ScanResultCancelAction | ScanSuccessAction;
 
 export default function reducer (state: ScannerState = defaultState, action: KnownAction): ScannerState {
   switch (action.type) {
@@ -72,14 +71,14 @@ export default function reducer (state: ScannerState = defaultState, action: Kno
   }
 }
 
-export function cameraPermission(payload: boolean): cameraPermissionAction {
+export function cameraPermission(payload: boolean): CameraPermissionAction {
   return {
     type: CAMERA_PERMISSION,
     payload
   };
 }
 
-export function scanResultCancel(): scanResultCancelAction {
+export function scanResultCancel(): ScanResultCancelAction {
   return {
     type: SCAN_RESULT_CANCEL
   };
@@ -87,7 +86,7 @@ export function scanResultCancel(): scanResultCancelAction {
 
 // Only use scanned data, also available type and target (target exists on Android, not sure about iOS)
 // TODO: Fix BarCodeScannerCallback type in DefinitelyTyped repo, check target in iOS
-export function scanSuccess(payload: BarCodeScannerResult): scanSuccessAction {
+export function scanSuccess(payload: BarCodeScannerResult): ScanSuccessAction {
   return {
     type: SCAN_SUCCESS,
     payload: payload.data

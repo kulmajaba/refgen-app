@@ -26,6 +26,9 @@ class ScannerView extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     const { scanResultData } = this.props;
 
+    // Condition used to have && scanResultData !== prevProps.scanResultData
+    // Add this back in? If so, clear scanResultData when exiting this view.
+    // Gotcha: if using navigation.navigate, the call does not unmount view
     if (scanResultData !== undefined && !prevProps.isBusy) {
       Alert.alert(
         'Barcode scanned',

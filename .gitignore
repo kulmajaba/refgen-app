@@ -1,4 +1,5 @@
 .DS_Store
+exampleData.json
 
 node_modules/**/*
 .expo/*
