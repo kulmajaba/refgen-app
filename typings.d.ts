@@ -14,9 +14,9 @@ type BookResource = {
     authors: string[],
     publisher?: string,
     publishedDate: string, // "2005-11-21", "1849"
-    description?: string,
+    description?: string, // Can be HTML formatted
     industryIdentifiers: Array<{
-      type: string, // "ISBN_13", "ISBN_10", "OTHER"
+      type: string, // "ISBN_13", "ISBN_10", "ISSN", "OTHER"
       identifier: string
     }>,
     readingModes?: {
@@ -29,7 +29,7 @@ type BookResource = {
       width: string,
       thickness: string
     },
-    printType: string, // "BOOK"
+    printType: string, // "BOOK", "MAGAZINE"
     maturityRating: string, // "NOT_MATURE"
     allowAnonLogging: boolean,
     mainCategory?: string,
@@ -42,14 +42,14 @@ type BookResource = {
       containsImageBubbles: boolean
     },
     imageLinks: {
-      smallThumbnail: string,
-      thumbnail: string,
-      small?: string,
-      medium?: string,
-      large?: string,
-      extraLarge?: string
+      smallThumbnail: string, // w ≈ 80px
+      thumbnail: string, // w ≈ 128px
+      small?: string, // w ≈ 300px
+      medium?: string, // w ≈ 575px
+      large?: string, // w ≈ 800px
+      extraLarge?: string // w ≈ 1280px
     },
-    language: string, // "en"
+    language: string, // ISO 639-1 language code
     previewLink: string,
     infoLink: string,
     canonicalVolumeLink: string
@@ -79,17 +79,17 @@ type BookResource = {
       finskyOfferType: number,
       listPrice: {
         amountInMicros: number,
-        currencyCode: string // "EUR"
+        currencyCode: string // ISO 4217 currency code
       },
       retailPrice: {
         amountInMicros: number,
-        currencyCode: string // "EUR"
+        currencyCode: string // ISO 4217 currency code
       }
     }>
   },
   accessInfo: {
-    country: string, // "FI"
-    viewability: string, // "ALL_PAGES", "PARTIAL"
+    country: string, // ISO_3166-1 country code
+    viewability: string, // "ALL_PAGES", "PARTIAL", "NO_PAGES", "UNKNOWN"
     embeddable: boolean,
     publicDomain: boolean,
     textToSpeechPermission: string, // "ALLOWED"
@@ -131,3 +131,40 @@ type BookResponse = {
   totalItems: number,
   items: BookResource[]
 }
+
+type BookData = {
+  id: string,
+  selfLink: string,
+  volumeInfo: {
+    title: string,
+    subtitle?: string,
+    authors: string[],
+    publisher?: string,
+    publishedDate: string,
+    industryIdentifiers: Array<{
+      type: string,
+      identifier: string
+    }>,
+    printType: string,
+    imageLinks: {
+      smallThumbnail: string,
+      thumbnail: string,
+    },
+    language: string,
+  },
+  accessInfo: {
+    country: string,
+    viewability: string,
+    publicDomain: boolean,
+    epub: {
+      isAvailable: boolean,
+      downloadLink?: string,
+      acsTokenLink?: string
+    },
+    pdf: {
+      isAvailable: boolean,
+      downloadLink?: string,
+      acsTokenLink?: string
+    }
+  }
+};

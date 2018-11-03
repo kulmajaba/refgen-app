@@ -7,11 +7,13 @@ const apiKey: string = 'AIzaSyAiUlbaPvpP3QC-qnjl7_MXPQ7HY0RDgqg';
 
 export type BookApiState = Readonly<{
   isBusy: boolean,
+  searchedBooks: BookData[],
   error: Error | undefined
 }>;
 
 const defaultState: BookApiState = {
   isBusy: false,
+  searchedBooks: [],
   error: undefined
 };
 
@@ -26,7 +28,7 @@ interface FetchBookStartAction extends Action {
 
 interface FetchBookSuccessAction extends Action {
   type: typeof FETCH_BOOK_SUCCESS;
-  payload: BookResponse;
+  payload: BookData[];
 };
 
 interface FetchBookErrorAction extends Action {
@@ -47,7 +49,8 @@ export default function reducer (state: BookApiState = defaultState, action: Kno
     case FETCH_BOOK_SUCCESS: {
       return {
         ...state,
-        isBusy: false // TODO: do something with the data
+        isBusy: false,
+        searchedBooks: action.payload
       };
     }
     case FETCH_BOOK_ERROR: {
@@ -76,8 +79,40 @@ export function fetchBook(barCode: string): ThunkAction<void, undefined, undefin
         return response.json();
       })
         .then((responseData: BookResponse) => {
-          // TODO: Process the data to bare minimum
-          dispatch({ type: FETCH_BOOK_SUCCESS, payload: responseData });
+          if (responseData.totalItems === 0) {
+            throw new Error("No books found");
+          }
+
+          const payload: BookData[] = responseData.items.map((responseBook: BookResource) => {
+            const book: BookData = {
+              id: responseBook.id,
+              selfLink: responseBook.selfLink,
+              volumeInfo: {
+                title: responseBook.volumeInfo.title,
+                subtitle: responseBook.volumeInfo.subtitle != undefined ? responseBook.volumeInfo.subtitle : undefined,
+                authors: responseBook.volumeInfo.authors,
+                publisher: responseBook.volumeInfo.publisher != undefined ? responseBook.volumeInfo.publisher : undefined,
+                publishedDate: responseBook.volumeInfo.publishedDate,
+                industryIdentifiers: responseBook.volumeInfo.industryIdentifiers,
+                printType: responseBook.volumeInfo.printType,
+                imageLinks: {
+                  smallThumbnail: responseBook.volumeInfo.imageLinks.smallThumbnail,
+                  thumbnail: responseBook.volumeInfo.imageLinks.thumbnail,
+                },
+                language: responseBook.volumeInfo.language
+              },
+              accessInfo: {
+                country: responseBook.accessInfo.country,
+                viewability: responseBook.accessInfo.viewability,
+                publicDomain: responseBook.accessInfo.publicDomain,
+                epub: responseBook.accessInfo.epub,
+                pdf: responseBook.accessInfo.pdf
+              }
+            };
+            return book;
+          })
+
+          dispatch({ type: FETCH_BOOK_SUCCESS, payload });
         })
       .catch((error: Error) => {
         console.log(error);
