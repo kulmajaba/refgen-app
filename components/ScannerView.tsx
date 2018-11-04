@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
+import { NavigationContainerProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 import { BarCodeScanner } from 'expo';
@@ -18,7 +19,7 @@ type DispatchProps = {
   scanResultCancel: typeof scanResultCancel
 };
 
-type Props = Readonly<StateProps & DispatchProps>;
+type Props = Readonly<NavigationContainerProps & StateProps & DispatchProps>;
 
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
@@ -35,7 +36,7 @@ class ScannerView extends Component<Props> {
         `A barcode with the data ${scanResultData} has been scanned. Search this?`,
         [
           { text: 'Cancel', onPress: () => this._alertCancelPressed(), style: 'cancel' },
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
+          { text: 'OK', onPress: () => this._alertOkPressed() },
         ],
         { onDismiss: () => this._alertCancelPressed() }
       );
@@ -70,6 +71,15 @@ class ScannerView extends Component<Props> {
   async _alertCancelPressed() {
     await delay(1000);
     this.props.scanResultCancel();
+  }
+
+  _alertOkPressed() {
+    // TODO: reactivate scanner?
+    if (this.props.navigation == undefined) {
+      console.warn('ScannerView: navigation prop is undefined');
+      return;
+    }
+    this.props.navigation.navigate('Search');
   }
 }
 

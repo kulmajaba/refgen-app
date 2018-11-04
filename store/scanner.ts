@@ -1,5 +1,7 @@
 import { Action } from 'redux';
 
+import assertNever from './assertNever';
+
 export type BarCodeScannerResult = {
   type: string,
   data: string
@@ -66,6 +68,7 @@ export default function reducer (state: ScannerState = defaultState, action: Kno
       };
     }
     default: {
+      assertNever(action);
       return state;
     }
   }

@@ -7,13 +7,15 @@ import { createStackNavigator } from 'react-navigation';
 import configureStore from './configureStore';
 import MainView from './components/MainView';
 import ScannerView from './components/ScannerView';
+import SearchView from './components/SearchView';
 
 const store = configureStore();
 
 const NavStack = createStackNavigator(
   {
     Home: MainView,
-    Scanner: ScannerView
+    Scanner: ScannerView,
+    Search: SearchView
   },
   {
     initialRouteName: 'Home',

@@ -7,13 +7,15 @@ import { BarCodeScanner, Constants, Permissions } from 'expo';
 
 import { ApplicationState } from '../store';
 import { cameraPermission } from '../store/scanner';
+import { fetchCitation } from '../store/bookApi';
 
 type StateProps = {
   hasCameraPermission: boolean | undefined
 };
 
 type DispatchProps = {
-  cameraPermission: (payload: boolean) => void
+  cameraPermission: typeof cameraPermission,
+  fetchCitation: typeof fetchCitation
 };
 
 type Props = Readonly<NavigationContainerProps & StateProps & DispatchProps>;
@@ -22,6 +24,7 @@ class MainView extends Component<Props> {
   async componentWillMount() {
     const result: Permissions.PermissionResponse = await Permissions.askAsync(Permissions.CAMERA);
     this.props.cameraPermission(result.status === 'granted');
+    this.props.fetchCitation('asd');
   }
 
   _navigateToScanner() {
@@ -71,7 +74,8 @@ const mapStateToProps = (state: ApplicationState) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-  cameraPermission
+  cameraPermission,
+  fetchCitation
 }, dispatch);
 
 export default connect<StateProps, DispatchProps, {}, ApplicationState>(mapStateToProps, mapDispatchToProps)(MainView);

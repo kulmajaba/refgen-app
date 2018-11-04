@@ -41,7 +41,7 @@ type BookResource = {
       containsEpubBubbles: boolean,
       containsImageBubbles: boolean
     },
-    imageLinks: {
+    imageLinks?: {
       smallThumbnail: string, // w ≈ 80px
       thumbnail: string, // w ≈ 128px
       small?: string, // w ≈ 300px
@@ -146,11 +146,12 @@ type BookData = {
       identifier: string
     }>,
     printType: string,
-    imageLinks: {
+    imageLinks?: {
       smallThumbnail: string,
       thumbnail: string,
     },
     language: string,
+    infoLink: string
   },
   accessInfo: {
     country: string,
