@@ -98,81 +98,78 @@ export default function reducer (state: BookApiState = defaultState, action: Kno
 }
 
 export function fetchBook(barCode: string): ThunkAction<void, undefined, undefined, KnownAction> {
-  return (dispatch: ThunkDispatch<undefined, undefined, KnownAction>) => {
+  return async (dispatch: ThunkDispatch<undefined, undefined, KnownAction>) => {
     dispatch({ type: FETCH_BOOK_START });
 
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=${barCode}&key=${apiKey}`)
-      .then((response: Response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
+    try {
+      const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${barCode}&key=${apiKey}`);
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
 
-        return response.json();
-      })
-        .then((responseData: BookResponse) => {
-          console.log(responseData);
-          if (responseData.totalItems === 0) {
-            throw new Error("No books found");
+      const responseData = await response.json();
+      
+      console.log(responseData);
+      if (responseData.totalItems === 0) {
+        throw new Error("No books found");
+      }
+
+      const payload: BookData[] = responseData.items.map((responseBook: BookResource) => {
+        const book: BookData = {
+          id: responseBook.id,
+          selfLink: responseBook.selfLink,
+          volumeInfo: {
+            title: responseBook.volumeInfo.title,
+            subtitle: responseBook.volumeInfo.subtitle != undefined ? responseBook.volumeInfo.subtitle : undefined,
+            authors: responseBook.volumeInfo.authors,
+            publisher: responseBook.volumeInfo.publisher != undefined ? responseBook.volumeInfo.publisher : undefined,
+            publishedDate: responseBook.volumeInfo.publishedDate,
+            industryIdentifiers: responseBook.volumeInfo.industryIdentifiers,
+            printType: responseBook.volumeInfo.printType,
+            imageLinks: responseBook.volumeInfo.imageLinks != undefined ? responseBook.volumeInfo.imageLinks : undefined,
+            language: responseBook.volumeInfo.language,
+            infoLink: responseBook.volumeInfo.infoLink
+          },
+          accessInfo: {
+            country: responseBook.accessInfo.country,
+            viewability: responseBook.accessInfo.viewability,
+            publicDomain: responseBook.accessInfo.publicDomain,
+            epub: responseBook.accessInfo.epub,
+            pdf: responseBook.accessInfo.pdf
           }
+        };
+        return book;
+      })
 
-          const payload: BookData[] = responseData.items.map((responseBook: BookResource) => {
-            const book: BookData = {
-              id: responseBook.id,
-              selfLink: responseBook.selfLink,
-              volumeInfo: {
-                title: responseBook.volumeInfo.title,
-                subtitle: responseBook.volumeInfo.subtitle != undefined ? responseBook.volumeInfo.subtitle : undefined,
-                authors: responseBook.volumeInfo.authors,
-                publisher: responseBook.volumeInfo.publisher != undefined ? responseBook.volumeInfo.publisher : undefined,
-                publishedDate: responseBook.volumeInfo.publishedDate,
-                industryIdentifiers: responseBook.volumeInfo.industryIdentifiers,
-                printType: responseBook.volumeInfo.printType,
-                imageLinks: responseBook.volumeInfo.imageLinks != undefined ? responseBook.volumeInfo.imageLinks : undefined,
-                language: responseBook.volumeInfo.language,
-                infoLink: responseBook.volumeInfo.infoLink
-              },
-              accessInfo: {
-                country: responseBook.accessInfo.country,
-                viewability: responseBook.accessInfo.viewability,
-                publicDomain: responseBook.accessInfo.publicDomain,
-                epub: responseBook.accessInfo.epub,
-                pdf: responseBook.accessInfo.pdf
-              }
-            };
-            return book;
-          })
-
-          dispatch({ type: FETCH_BOOK_SUCCESS, payload });
-        })
-      .catch((error: Error) => {
-        console.log(error);
-        dispatch({ type: FETCH_ERROR, payload: error });
-      });
-  }
+      dispatch({ type: FETCH_BOOK_SUCCESS, payload });
+    }
+    catch(error) {
+      console.log(error);
+      dispatch({ type: FETCH_ERROR, payload: error });
+    }
+  }     
 }
 
 export function fetchCitation(id: string):ThunkAction<void, ApplicationState, undefined, KnownAction> {
   // https://books.google.fi/books/download/Nälkäpeli.bibtex?id=pB0GDQEACAAJ&hl=fi&output=bibtex
-  return (dispatch: ThunkDispatch<ApplicationState, undefined, KnownAction>, getState: () => ApplicationState) => {
+  return async (dispatch: ThunkDispatch<ApplicationState, undefined, KnownAction>, getState: () => ApplicationState) => {
     dispatch({ type: FETCH_CITATION_START });
 
-    fetch(`https://books.google.fi/books/download/?id=${id}&hl=fi&output=bibtex`)
-      .then((response: Response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
+    try {
+      const response = await fetch(`https://books.google.fi/books/download/?id=${id}&hl=fi&output=bibtex`);
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
 
-        return response.blob()
-      })
-      .then(async (data: Blob) => {
-        console.log('ses')
-        const text = await readFile(data);
-        console.log(text);
-        
-      })
-      .catch((error: Error) => {
-        console.log(error);
-        dispatch({ type: FETCH_ERROR, payload: error });
-      });
+      const data = await response.blob();
+      console.log('Citation fetched')
+
+      const text = await readFile(data);
+      console.log(text);
+    }
+    catch (error) {
+      console.log(error);
+      dispatch({ type: FETCH_ERROR, payload: error });
+    }
   }
 }
