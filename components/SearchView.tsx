@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { NavigationContainerProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
@@ -40,10 +40,32 @@ class SearchView extends Component<Props> {
 
   _renderListItem(item: BookData) {
     return (
-      <View style={styles.listItem} key={item.id}>
-        <Text>{item.volumeInfo.title}</Text>
-        <TouchableOpacity onPress={() => this._itemSelected(item)}>
-          <Text>USE</Text>
+      <View style={styles.listItem}>
+        {
+          item.volumeInfo.imageLinks !== undefined && item.volumeInfo.imageLinks.smallThumbnail !== undefined &&
+          <Image
+            style={styles.image}
+            source={{uri: item.volumeInfo.imageLinks.smallThumbnail}}
+            resizeMode={'contain'}
+          />
+        }
+        <View style={styles.listItemInfo}>
+          {
+            item.volumeInfo.authors !== undefined &&
+            item.volumeInfo.authors.map((author: string, index: number) => {
+              return <Text key={`author${index}`}>{author}</Text>;
+            })
+          }
+          <Text>{item.volumeInfo.title}</Text>
+          {
+            item.volumeInfo.subtitle !== undefined &&
+            <Text>{item.volumeInfo.subtitle}</Text>
+          }
+          <Text>Published: {item.volumeInfo.publishedDate}</Text>
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={() => this._itemSelected(item)}>
+          <Text style={styles.buttonText}>USE</Text>
         </TouchableOpacity>
       </View>
     )
@@ -55,6 +77,7 @@ class SearchView extends Component<Props> {
         <FlatList
           data={this.props.searchedBooks}
           renderItem={(obj: {item: BookData}) => this._renderListItem(obj.item)}
+          keyExtractor={(item: BookData) => item.id}
         />
       </View>
     );
@@ -76,13 +99,38 @@ class SearchView extends Component<Props> {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    padding: 18,
+    borderRadius: 8,
+    backgroundColor: '#555'
+  },
+  buttonText: {
+    color: 'white'
+  },
   container: {
-    alignItems: 'center',
     flex: 1,
   },
+  image: {
+    width: 50,
+    height: 90,
+    borderRadius: 4
+  },
   listItem: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    margin: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 6,
+    borderRadius: 8,
+    backgroundColor: '#ccc'
+  },
+  listItemInfo: {
+    flex: 1,
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    margin: 8
   }
 });
 

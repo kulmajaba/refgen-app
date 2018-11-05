@@ -11,7 +11,7 @@ type BookResource = {
   volumeInfo: {
     title: string,
     subtitle?: string,
-    authors: string[],
+    authors?: string[],
     publisher?: string,
     publishedDate: string, // "2005-11-21", "1849"
     description?: string, // Can be HTML formatted
@@ -138,7 +138,7 @@ type BookData = {
   volumeInfo: {
     title: string,
     subtitle?: string,
-    authors: string[],
+    authors?: string[],
     publisher?: string,
     publishedDate: string,
     industryIdentifiers: Array<{
