@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 
-import assertNever from './assertNever';
+import assertNever from '../util/assertNever';
 
 export type BarCodeScannerResult = {
   type: string,

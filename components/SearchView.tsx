@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Image, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, View, FlatList, TouchableOpacity, ImageStyle } from 'react-native';
 import { NavigationContainerProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
 import { ApplicationState } from '../store';
 import { fetchBook, fetchCitation } from '../store/bookApi';
+import { colors, globalStyles } from '../util/styleConstants';
 
 type StateProps = {
   scanResultData: string | undefined,
@@ -21,6 +22,10 @@ type DispatchProps = {
 type Props = Readonly<NavigationContainerProps & StateProps & DispatchProps>;
 
 class SearchView extends Component<Props> {
+  static navigationOptions = {
+    title: 'Search',
+  };
+
   componentWillMount() {
     if (this.props.scanResultData === undefined) {
       console.warn("SearchView: scanResultData is undefined");
@@ -31,8 +36,8 @@ class SearchView extends Component<Props> {
 
   _renderLoadingView() {
     return (
-      <View style={styles.container}>
-        <Text>Searching Google Books for {this.props.scanResultData}</Text>
+      <View style={[styles.container, styles.loading]}>
+        <Text style={[globalStyles.bobyText, styles.loadingText]}>Searching Google Books for {this.props.scanResultData}</Text>
         <ActivityIndicator size={'large'} />
       </View>
     );
@@ -44,24 +49,24 @@ class SearchView extends Component<Props> {
         {
           item.volumeInfo.imageLinks !== undefined && item.volumeInfo.imageLinks.smallThumbnail !== undefined &&
           <Image
-            style={styles.image}
+            style={styles.image as ImageStyle} // TODO: fix type
             source={{uri: item.volumeInfo.imageLinks.smallThumbnail}}
             resizeMode={'contain'}
           />
         }
         <View style={styles.listItemInfo}>
-          {
-            item.volumeInfo.authors !== undefined &&
-            item.volumeInfo.authors.map((author: string, index: number) => {
-              return <Text key={`author${index}`}>{author}</Text>;
-            })
-          }
-          <Text>{item.volumeInfo.title}</Text>
+          <Text style={[globalStyles.bobyText, {fontWeight: 'bold'}]}>{item.volumeInfo.title}</Text>
           {
             item.volumeInfo.subtitle !== undefined &&
-            <Text>{item.volumeInfo.subtitle}</Text>
+            <Text style={styles.subtitle}>{item.volumeInfo.subtitle}</Text>
           }
-          <Text>Published: {item.volumeInfo.publishedDate}</Text>
+          <Text style={globalStyles.bobyText}>
+            {
+              item.volumeInfo.authors !== undefined &&
+              item.volumeInfo.authors.join(', ')
+            }
+          </Text>
+          <Text style={globalStyles.bobyText}>Published: {item.volumeInfo.publishedDate}</Text>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={() => this._itemSelected(item)}>
@@ -78,6 +83,7 @@ class SearchView extends Component<Props> {
           data={this.props.searchedBooks}
           renderItem={(obj: {item: BookData}) => this._renderListItem(obj.item)}
           keyExtractor={(item: BookData) => item.id}
+          ListHeaderComponent={<View style={styles.listHeader} />}
         />
       </View>
     );
@@ -102,35 +108,56 @@ const styles = StyleSheet.create({
   button: {
     padding: 18,
     borderRadius: 8,
-    backgroundColor: '#555'
+    backgroundColor: colors.primaryColorD
   },
   buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
     color: 'white'
   },
   container: {
     flex: 1,
+    backgroundColor: '#ccc'
   },
   image: {
     width: 50,
     height: 90,
     borderRadius: 4
   },
+  listHeader: {
+    marginTop: 8
+  },
   listItem: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    margin: 8,
+    marginHorizontal: 8,
+    marginBottom: 8,
     paddingVertical: 12,
     paddingHorizontal: 6,
     borderRadius: 8,
-    backgroundColor: '#ccc'
+    backgroundColor: '#f0f0f0'
   },
   listItemInfo: {
     flex: 1,
     flexDirection: 'column',
     flexWrap: 'wrap',
     margin: 8
+  },
+  loading: {
+    justifyContent: 'flex-start',
+    alignContent: 'center',
+    paddingHorizontal: 32
+  },
+  loadingText: {
+    marginVertical: 40,
+    textAlign: 'center'
+  },
+  subtitle: {
+    fontSize: 15,
+    color: '#444',
+    paddingLeft: 6
   }
 });
 

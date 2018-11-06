@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import React, { Component, ReactNode } from 'react';
+import { Alert, View, Text, StyleSheet, TouchableHighlight, Image, ImageStyle } from 'react-native';
 import { NavigationContainerProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
@@ -8,6 +8,7 @@ import { BarCodeScanner, Constants, Permissions } from 'expo';
 import { ApplicationState } from '../store';
 import { cameraPermission } from '../store/scanner';
 import { fetchCitation } from '../store/bookApi';
+import { globalStyles, colors } from '../util/styleConstants';
 
 type StateProps = {
   hasCameraPermission: boolean | undefined
@@ -21,6 +22,10 @@ type DispatchProps = {
 type Props = Readonly<NavigationContainerProps & StateProps & DispatchProps>;
 
 class MainView extends Component<Props> {
+  static navigationOptions = {
+    title: 'Home',
+  };
+
   async componentWillMount() {
     const result: Permissions.PermissionResponse = await Permissions.askAsync(Permissions.CAMERA);
     this.props.cameraPermission(result.status === 'granted');
@@ -28,31 +33,48 @@ class MainView extends Component<Props> {
   }
 
   _navigateToScanner() {
-    if (this.props.navigation == undefined) {
+    const { hasCameraPermission, navigation } = this.props;
+
+    if (navigation == undefined) {
       console.warn('MainView: navigation prop is undefined');
       return;
     }
-    this.props.navigation.navigate('Scanner');
+
+    if (hasCameraPermission !== true) {
+      Alert.alert(
+        'No camera permission',
+        'The app has not been granted permission to use the camera.',
+      );
+      return;
+    }
+
+    navigation.navigate('Scanner');
   }
 
   render() {
     const { hasCameraPermission } = this.props;
 
-    let text = <Text>Halo?</Text>
+    let status: ReactNode = null;
 
     if (hasCameraPermission === undefined) {
-      text = <Text>Requesting for camera permission</Text>;
+      status = <Text style={[globalStyles.bobyText, styles.bodyText]}>'Requesting for camera permission'</Text>;
     }
     if (hasCameraPermission === false) {
-      text = <Text>No access to camera</Text>;
+      status = <Text style={[globalStyles.bobyText, styles.bodyText]}>'No camera permission'</Text>;
     }
 
     return (
       <View style={styles.container}>
-        {text}
+        <Text style={[globalStyles.bobyText, styles.bodyText]}>Scan a barcode to search Google Books for the information.
+          Select the right book and you can share the citation in BibTex format.</Text>
+        
+          {status}
 
-        <TouchableHighlight onPress={() => this._navigateToScanner()}>
-          <Text>Go to scanner</Text>
+        <TouchableHighlight style={styles.button} onPress={() => this._navigateToScanner()}>
+          <Image
+            source={require('../assets/camera.png')}
+            style={styles.buttonImage as ImageStyle}
+          />
         </TouchableHighlight>
       </View>
     );
@@ -61,10 +83,26 @@ class MainView extends Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    margin: 24
   },
+  bodyText: {
+    textAlign: 'center'
+  },
+  button: {
+    backgroundColor: colors.primaryColorD,
+    padding: 14,
+    borderRadius: 40,
+    alignSelf: 'flex-end',
+    marginBottom: 12,
+    marginRight: 12
+  },
+  buttonImage: {
+    width: 48,
+    height: 48
+  }
 });
 
 const mapStateToProps = (state: ApplicationState) => {

@@ -24,6 +24,10 @@ type Props = Readonly<NavigationContainerProps & StateProps & DispatchProps>;
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 class ScannerView extends Component<Props> {
+  static navigationOptions = {
+    title: 'Scan',
+  };
+
   componentDidUpdate(prevProps: Props) {
     const { scanResultData } = this.props;
 

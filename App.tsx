@@ -8,6 +8,7 @@ import configureStore from './configureStore';
 import MainView from './components/MainView';
 import ScannerView from './components/ScannerView';
 import SearchView from './components/SearchView';
+import { colors } from './util/styleConstants';
 
 const store = configureStore();
 
@@ -19,6 +20,15 @@ const NavStack = createStackNavigator(
   },
   {
     initialRouteName: 'Home',
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: colors.primaryColorM,
+      },
+      headerTintColor: 'white',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    },
   }
 );
 
