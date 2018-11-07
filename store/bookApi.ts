@@ -113,7 +113,6 @@ export function fetchBook(barCode: string): ThunkAction<void, undefined, undefin
 
       const responseData = await response.json();
       
-      console.log(responseData);
       if (responseData.totalItems === 0) {
         throw new Error('No books found');
       }

@@ -27,7 +27,7 @@ class MainView extends Component<Props> {
     title: 'Home',
   };
 
-  async componentWillMount() {
+  async componentDidMount() {
     const result: Permissions.PermissionResponse = await Permissions.askAsync(Permissions.CAMERA);
     this.props.cameraPermission(result.status === 'granted');
   }

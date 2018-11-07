@@ -31,8 +31,6 @@ class ScannerView extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     const { scanResultData } = this.props;
 
-    // Condition used to have && scanResultData !== prevProps.scanResultData
-    // Add this back in? If so, clear scanResultData when exiting this view.
     // Gotcha: if using navigation.navigate, the call does not unmount view
     if (scanResultData !== undefined && !prevProps.isBusy) {
       Alert.alert(
@@ -59,7 +57,7 @@ class ScannerView extends Component<Props> {
       <View style={{ flex: 1 }}>
         <BarCodeScanner
           onBarCodeRead={
-            isBusy ?
+            isBusy ? // This will only prevent events when this view is focused
             undefined :
             (res: BarCodeScannerResult) => {
               console.log(`Barcode ${res.data} read`)
@@ -78,11 +76,11 @@ class ScannerView extends Component<Props> {
   }
 
   _alertOkPressed() {
-    // TODO: reactivate scanner?
     if (this.props.navigation == undefined) {
       console.warn('ScannerView: navigation prop is undefined');
       return;
     }
+    
     this.props.navigation.navigate('Search');
   }
 }

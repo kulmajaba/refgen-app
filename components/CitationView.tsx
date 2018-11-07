@@ -1,8 +1,7 @@
 import React, { Component, ReactNode } from 'react';
-import { Alert, View, Text, StyleSheet, TouchableHighlight, Image, ImageStyle, TextInput, Share } from 'react-native';
-import { NavigationContainerProps } from 'react-navigation';
+import { Alert, View, Text, StyleSheet, Image, ImageStyle, TextInput, Share, TouchableOpacity } from 'react-native';
+import { NavigationContainerProps, NavigationScreenProp } from 'react-navigation';
 import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
 
 import { ApplicationState } from '../store';
 import { globalStyles, colors } from '../util/styleConstants';
@@ -12,15 +11,20 @@ type StateProps = {
   citation: string | undefined
 };
 
-type DispatchProps = {
-  
-};
+type Props = Readonly<NavigationContainerProps & StateProps>;
 
-type Props = Readonly<NavigationContainerProps & StateProps & DispatchProps>;
-
-class MainView extends Component<Props> {
-  static navigationOptions = {
-    title: 'Citation',
+class CitationView extends Component<Props> {
+  static navigationOptions = ({ navigation }: { navigation: NavigationScreenProp<{}> }) => {
+    return {
+      title: 'Citation',
+      headerRight: (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Home')}
+        >
+          <Image source={require('../assets/home.png')} style={{ width: 32, height: 32, marginRight: 18 }} />
+        </TouchableOpacity>
+      )
+    }
   };
 
   _shareCitation() {
@@ -59,18 +63,6 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     textAlign: 'center'
-  },
-  button: {
-    backgroundColor: colors.primaryColorD,
-    padding: 14,
-    borderRadius: 40,
-    alignSelf: 'flex-end',
-    marginBottom: 12,
-    marginRight: 12
-  },
-  buttonImage: {
-    width: 48,
-    height: 48
   }
 });
 
@@ -80,8 +72,4 @@ const mapStateToProps = (state: ApplicationState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-  
-}, dispatch);
-
-export default connect<StateProps, DispatchProps, {}, ApplicationState>(mapStateToProps, mapDispatchToProps)(MainView);
+export default connect<StateProps, {}, {}, ApplicationState>(mapStateToProps)(CitationView);
