@@ -7,6 +7,7 @@ import { BarCodeScanner } from 'expo';
 
 import { ApplicationState } from '../store';
 import { BarCodeScannerResult, scanSuccess, scanResultCancel } from '../store/scanner';
+import delay from '../util/delay';
 
 type StateProps = {
   isBusy: boolean,
@@ -20,8 +21,6 @@ type DispatchProps = {
 };
 
 type Props = Readonly<NavigationContainerProps & StateProps & DispatchProps>;
-
-const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 class ScannerView extends Component<Props> {
   static navigationOptions = {
