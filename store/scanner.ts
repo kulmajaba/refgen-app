@@ -23,7 +23,7 @@ const defaultState: ScannerState = {
 
 // TS 'typeof' returns the exact value as type for implicitly typed 'const'
 const CAMERA_PERMISSION = 'refgen-app/scanner/CAMERA_PERMISSION';
-const SCAN_RESULT_CANCEL = 'refgen-app/scanner/SCAN_RESULT_CANCEL';
+const SCAN_RESULT_DONE = 'refgen-app/scanner/SCAN_RESULT_DONE';
 const SCAN_SUCCESS = 'refgen-app/scanner/SCAN_SUCCESS';
 
 interface CameraPermissionAction extends Action {
@@ -31,8 +31,8 @@ interface CameraPermissionAction extends Action {
   payload: boolean;
 };
 
-interface ScanResultCancelAction extends Action {
-  type: typeof SCAN_RESULT_CANCEL;
+interface ScanResultDoneAction extends Action {
+  type: typeof SCAN_RESULT_DONE;
 }
 
 interface ScanSuccessAction extends Action {
@@ -41,7 +41,7 @@ interface ScanSuccessAction extends Action {
 };
 
 type KnownAction = CameraPermissionAction |
-                   ScanResultCancelAction |
+                   ScanResultDoneAction |
                    ScanSuccessAction;
 
 export default function reducer (state: ScannerState = defaultState, action: KnownAction): ScannerState {
@@ -52,7 +52,7 @@ export default function reducer (state: ScannerState = defaultState, action: Kno
         hasCameraPermission: action.payload
       };
     }
-    case SCAN_RESULT_CANCEL: {
+    case SCAN_RESULT_DONE: {
       return {
         ...state,
         isBusy: false
@@ -83,9 +83,9 @@ export function cameraPermission(payload: boolean): CameraPermissionAction {
   };
 }
 
-export function scanResultCancel(): ScanResultCancelAction {
+export function scanResultDone(): ScanResultDoneAction {
   return {
-    type: SCAN_RESULT_CANCEL
+    type: SCAN_RESULT_DONE
   };
 }
 

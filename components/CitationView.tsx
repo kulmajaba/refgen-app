@@ -19,7 +19,7 @@ class CitationView extends Component<Props> {
       title: 'Citation',
       headerRight: (
         <TouchableOpacity
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.popToTop()}
         >
           <Image source={require('../assets/home.png')} style={{ width: 32, height: 32, marginRight: 18 }} />
         </TouchableOpacity>

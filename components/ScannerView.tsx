@@ -6,7 +6,7 @@ import { Dispatch, bindActionCreators } from 'redux';
 import { BarCodeScanner } from 'expo';
 
 import { ApplicationState } from '../store';
-import { BarCodeScannerResult, scanSuccess, scanResultCancel } from '../store/scanner';
+import { BarCodeScannerResult, scanSuccess, scanResultDone } from '../store/scanner';
 import delay from '../util/delay';
 
 type StateProps = {
@@ -17,7 +17,7 @@ type StateProps = {
 
 type DispatchProps = {
   scanSuccess: typeof scanSuccess,
-  scanResultCancel: typeof scanResultCancel
+  scanResultDone: typeof scanResultDone
 };
 
 type Props = Readonly<NavigationContainerProps & StateProps & DispatchProps>;
@@ -71,7 +71,7 @@ class ScannerView extends Component<Props> {
 
   async _alertCancelPressed() {
     await delay(1000);
-    this.props.scanResultCancel();
+    this.props.scanResultDone();
   }
 
   _alertOkPressed() {
@@ -79,8 +79,9 @@ class ScannerView extends Component<Props> {
       console.warn('ScannerView: navigation prop is undefined');
       return;
     }
-    
-    this.props.navigation.navigate('Search');
+    // TODO: reactivate scanner when necessary
+    this.props.navigation.replace('Search');
+    this.props.scanResultDone();
   }
 }
 
@@ -94,7 +95,7 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
   scanSuccess,
-  scanResultCancel
+  scanResultDone
 }, dispatch);
 
 export default connect<StateProps, DispatchProps, {}, ApplicationState>(mapStateToProps, mapDispatchToProps)(ScannerView);
