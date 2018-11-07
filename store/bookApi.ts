@@ -12,12 +12,14 @@ const apiKey: string = 'AIzaSyAiUlbaPvpP3QC-qnjl7_MXPQ7HY0RDgqg';
 export type BookApiState = Readonly<{
   isBusy: boolean,
   searchedBooks: BookData[],
+  citation: string | undefined,
   error: Error | undefined
 }>;
 
 const defaultState: BookApiState = {
   isBusy: false,
   searchedBooks: [],
+  citation: undefined,
   error: undefined
 };
 
@@ -51,11 +53,11 @@ interface FetchErrorAction extends Action {
   payload: Error;
 };
 
-type KnownAction = FetchBookStartAction
-                   | FetchBookSuccessAction
-                   | FetchCitationStartAction
-                   | FetchCitationSuccessAction
-                   | FetchErrorAction;
+type KnownAction = FetchBookStartAction |
+                   FetchBookSuccessAction |
+                   FetchCitationStartAction |
+                   FetchCitationSuccessAction |
+                   FetchErrorAction;
 
 export default function reducer (state: BookApiState = defaultState, action: KnownAction): BookApiState {
   switch (action.type) {
@@ -80,7 +82,9 @@ export default function reducer (state: BookApiState = defaultState, action: Kno
     }
     case FETCH_CITATION_SUCCESS: {
       return {
-        ...state // TODO: Do something with the data
+        ...state,
+        isBusy: false,
+        citation: action.payload
       };
     }
     case FETCH_ERROR: {
@@ -111,7 +115,7 @@ export function fetchBook(barCode: string): ThunkAction<void, undefined, undefin
       
       console.log(responseData);
       if (responseData.totalItems === 0) {
-        throw new Error("No books found");
+        throw new Error('No books found');
       }
 
       const payload: BookData[] = responseData.items.map((responseBook: BookResource) => {
@@ -151,10 +155,11 @@ export function fetchBook(barCode: string): ThunkAction<void, undefined, undefin
 }
 
 export function fetchCitation(id: string):ThunkAction<void, ApplicationState, undefined, KnownAction> {
-  // https://books.google.fi/books/download/Nälkäpeli.bibtex?id=pB0GDQEACAAJ&hl=fi&output=bibtex
+  // e.g. https://books.google.fi/books/download/Nälkäpeli.bibtex?id=pB0GDQEACAAJ&hl=fi&output=bibtex
   return async (dispatch: ThunkDispatch<ApplicationState, undefined, KnownAction>, getState: () => ApplicationState) => {
     dispatch({ type: FETCH_CITATION_START });
 
+    // TODO: Localize hl parameter, add a setting?
     try {
       const response = await fetch(`https://books.google.fi/books/download/?id=${id}&hl=fi&output=bibtex`);
       if (!response.ok) {
@@ -166,6 +171,8 @@ export function fetchCitation(id: string):ThunkAction<void, ApplicationState, un
 
       const text = await readFile(data);
       console.log(text);
+
+      dispatch({ type: FETCH_CITATION_SUCCESS, payload: text });
     }
     catch (error) {
       console.log(error);

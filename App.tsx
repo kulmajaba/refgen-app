@@ -9,6 +9,7 @@ import MainView from './components/MainView';
 import ScannerView from './components/ScannerView';
 import SearchView from './components/SearchView';
 import { colors } from './util/styleConstants';
+import CitationView from './components/CitationView';
 
 const store = configureStore();
 
@@ -16,7 +17,8 @@ const NavStack = createStackNavigator(
   {
     Home: MainView,
     Scanner: ScannerView,
-    Search: SearchView
+    Search: SearchView,
+    Citation: CitationView
   },
   {
     initialRouteName: 'Home',

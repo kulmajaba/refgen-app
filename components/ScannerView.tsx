@@ -51,7 +51,7 @@ class ScannerView extends Component<Props> {
     const { hasCameraPermission, isBusy } = this.props;
 
     if (hasCameraPermission !== true) { // Should never happen
-      console.warn("ScannerView: access to camera was not checked before.");
+      console.warn('ScannerView: access to camera was not checked before.');
       return <Text>No access to camera</Text>;
     }
     

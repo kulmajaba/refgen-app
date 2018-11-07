@@ -40,7 +40,9 @@ interface ScanSuccessAction extends Action {
   payload: string;
 };
 
-type KnownAction = CameraPermissionAction | ScanResultCancelAction | ScanSuccessAction;
+type KnownAction = CameraPermissionAction |
+                   ScanResultCancelAction |
+                   ScanSuccessAction;
 
 export default function reducer (state: ScannerState = defaultState, action: KnownAction): ScannerState {
   switch (action.type) {

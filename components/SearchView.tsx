@@ -28,7 +28,7 @@ class SearchView extends Component<Props> {
 
   componentWillMount() {
     if (this.props.scanResultData === undefined) {
-      console.warn("SearchView: scanResultData is undefined");
+      console.warn('SearchView: scanResultData is undefined');
       return;
     }
     this.props.fetchBook(this.props.scanResultData);
@@ -101,6 +101,15 @@ class SearchView extends Component<Props> {
   _itemSelected(item: BookData) {
     console.log(`Selected: ${item.volumeInfo.title}`);
     this.props.fetchCitation(item.id);
+    
+    const { navigation } = this.props;
+
+    if (navigation == undefined) {
+      console.warn('CitationView: navigation prop is undefined');
+      return;
+    }
+
+    navigation.navigate('Citation');
   }
 }
 

@@ -9,6 +9,7 @@ import { ApplicationState } from '../store';
 import { cameraPermission } from '../store/scanner';
 import { fetchCitation } from '../store/bookApi';
 import { globalStyles, colors } from '../util/styleConstants';
+import AndroidButton from './AndroidButton';
 
 type StateProps = {
   hasCameraPermission: boolean | undefined
@@ -29,7 +30,6 @@ class MainView extends Component<Props> {
   async componentWillMount() {
     const result: Permissions.PermissionResponse = await Permissions.askAsync(Permissions.CAMERA);
     this.props.cameraPermission(result.status === 'granted');
-    this.props.fetchCitation('asd');
   }
 
   _navigateToScanner() {
@@ -65,17 +65,13 @@ class MainView extends Component<Props> {
 
     return (
       <View style={styles.container}>
-        <Text style={[globalStyles.bobyText, styles.bodyText]}>Scan a barcode to search Google Books for the information.
-          Select the right book and you can share the citation in BibTex format.</Text>
+        <Text style={[globalStyles.bobyText, styles.bodyText]}>
+          Scan a barcode to search Google Books for the information. Select the right book and you can share the citation in BibTex format.
+        </Text>
         
-          {status}
+        {status}
 
-        <TouchableHighlight style={styles.button} onPress={() => this._navigateToScanner()}>
-          <Image
-            source={require('../assets/camera.png')}
-            style={styles.buttonImage as ImageStyle}
-          />
-        </TouchableHighlight>
+        <AndroidButton imageSource={require('../assets/camera.png')} onPress={() => this._navigateToScanner()} />
       </View>
     );
   }

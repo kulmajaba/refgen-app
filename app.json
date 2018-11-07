@@ -20,6 +20,9 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android" : {
+      "package": "com.kulmajaba.refgen-app"
+    },
     "ios": {
       "supportsTablet": true
     },
