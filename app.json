@@ -24,7 +24,8 @@
       "package": "host.exp.kulmajaba.refgen_app"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "host.exp.kulmajaba.refgen_app"
     },
     "packagerOpts": {
       "sourceExts": ["ts", "tsx"],
