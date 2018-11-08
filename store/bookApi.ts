@@ -1,9 +1,9 @@
-import { Action, ActionCreator, Dispatch, Reducer } from 'redux';
+import { Action } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 import assertNever from '../util/assertNever';
-import { ApplicationState } from '.';
 import readFile from '../util/readFile';
+import { ApplicationState } from './';
 
 // Not an authentication key, used for statistics.
 // TODO: restrict api key usage to Android/iOS apps only

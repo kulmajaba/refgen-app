@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Image, StyleSheet, Text, View, FlatList, TouchableOpacity, ImageStyle } from 'react-native';
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    ImageStyle,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import { NavigationContainerProps } from 'react-navigation';
 import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 
 import { ApplicationState } from '../store';
 import { fetchBook, fetchCitation } from '../store/bookApi';

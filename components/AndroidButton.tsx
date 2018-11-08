@@ -1,5 +1,12 @@
 import React, { SFC } from 'react';
-import { TouchableOpacity, Image, ImageStyle, ImageRequireSource, StyleSheet } from 'react-native'
+import {
+  Image,
+  ImageRequireSource,
+  ImageStyle,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
+
 import { colors } from '../util/styleConstants';
 
 type Props = {

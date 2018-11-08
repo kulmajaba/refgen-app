@@ -1,15 +1,15 @@
+import { Constants } from 'expo';
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Provider } from 'react-redux';
-import { Constants } from 'expo';
 import { createStackNavigator } from 'react-navigation';
+import { Provider } from 'react-redux';
 
-import configureStore from './configureStore';
+import CitationView from './components/CitationView';
 import MainView from './components/MainView';
 import ScannerView from './components/ScannerView';
 import SearchView from './components/SearchView';
+import configureStore from './configureStore';
 import { colors } from './util/styleConstants';
-import CitationView from './components/CitationView';
 
 const store = configureStore();
 

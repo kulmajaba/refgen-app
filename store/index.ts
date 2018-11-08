@@ -1,6 +1,7 @@
-import scanner, { ScannerState } from './scanner';
-import bookApi, { BookApiState } from './bookApi';
 import { combineReducers } from 'redux';
+
+import bookApi, { BookApiState } from './bookApi';
+import scanner, { ScannerState } from './scanner';
 
 export interface ApplicationState {
   scanner: ScannerState,

@@ -1,12 +1,12 @@
+import { BarCodeScanner } from 'expo';
 import React, { Component } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainerProps } from 'react-navigation';
 import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
-import { BarCodeScanner } from 'expo';
+import { bindActionCreators, Dispatch } from 'redux';
 
 import { ApplicationState } from '../store';
-import { BarCodeScannerResult, scanSuccess, scanResultDone } from '../store/scanner';
+import { BarCodeScannerResult, scanResultDone, scanSuccess } from '../store/scanner';
 import delay from '../util/delay';
 
 type StateProps = {

@@ -1,14 +1,14 @@
+import { BarCodeScanner, Constants, Permissions } from 'expo';
 import React, { Component, ReactNode } from 'react';
-import { Alert, View, Text, StyleSheet, TouchableHighlight, Image, ImageStyle } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainerProps } from 'react-navigation';
 import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
-import { BarCodeScanner, Constants, Permissions } from 'expo';
+import { bindActionCreators, Dispatch } from 'redux';
 
 import { ApplicationState } from '../store';
-import { cameraPermission } from '../store/scanner';
 import { fetchCitation } from '../store/bookApi';
-import { globalStyles, colors } from '../util/styleConstants';
+import { cameraPermission } from '../store/scanner';
+import { colors, globalStyles } from '../util/styleConstants';
 import AndroidButton from './AndroidButton';
 
 type StateProps = {

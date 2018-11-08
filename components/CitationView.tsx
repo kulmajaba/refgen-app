@@ -1,10 +1,17 @@
-import React, { Component, ReactNode } from 'react';
-import { Alert, View, Text, StyleSheet, Image, ImageStyle, TextInput, Share, TouchableOpacity } from 'react-native';
+import React, { Component } from 'react';
+import {
+  Image,
+  Share,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { NavigationContainerProps, NavigationScreenProp } from 'react-navigation';
 import { connect } from 'react-redux';
 
 import { ApplicationState } from '../store';
-import { globalStyles, colors } from '../util/styleConstants';
+import { globalStyles } from '../util/styleConstants';
 import AndroidButton from './AndroidButton';
 
 type StateProps = {
