@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 import { ApplicationState } from '../store';
 import { globalStyles } from '../util/styleConstants';
-import AndroidButton from './AndroidButton';
+import PlatformButton from './PlatformButton';
 
 type StateProps = {
   citation: string | undefined
@@ -55,7 +55,7 @@ class CitationView extends Component<Props> {
           {this.props.citation}
         </Text>
 
-        <AndroidButton imageSource={require('../assets/share-white.png')} onPress={() => this._shareCitation()} />
+        <PlatformButton image={'share'} textIos={'Share'} onPress={() => this._shareCitation()} />
       </View>
     );
   }

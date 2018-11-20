@@ -9,8 +9,7 @@ import { ApplicationState } from '../store';
 import { fetchCitation } from '../store/bookApi';
 import { cameraPermission } from '../store/scanner';
 import { colors, globalStyles } from '../util/styleConstants';
-import AndroidButton from './AndroidButton';
-import IosButton from  './IosButton';
+import PlatformButton from './PlatformButton';
 
 type StateProps = {
   hasCameraPermission: boolean | undefined
@@ -72,7 +71,7 @@ class MainView extends Component<Props> {
         
         {status}
 
-        <AndroidButton imageSource={require('../assets/camera-white.png')} onPress={() => this._navigateToScanner()} />
+        <PlatformButton image={'camera'} textIos={'Scan'} onPress={() => this._navigateToScanner()} />
       </View>
     );
   }
