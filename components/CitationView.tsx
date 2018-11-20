@@ -55,7 +55,7 @@ class CitationView extends Component<Props> {
           {this.props.citation}
         </Text>
 
-        <AndroidButton imageSource={require('../assets/share.png')} onPress={() => this._shareCitation()} />
+        <AndroidButton imageSource={require('../assets/share-white.png')} onPress={() => this._shareCitation()} />
       </View>
     );
   }

@@ -4,6 +4,7 @@ import {
   ImageRequireSource,
   ImageStyle,
   StyleSheet,
+  Text,
   TouchableOpacity
 } from 'react-native';
 
@@ -11,12 +12,14 @@ import { colors } from '../util/styleConstants';
 
 type Props = {
   imageSource: ImageRequireSource,
+  text: string,
   onPress: () => void
 };
 
-const AndroidButton: SFC<Props> = (props: Props) => {
+const IosButton: SFC<Props> = (props: Props) => {
   return (
     <TouchableOpacity style={styles.button} onPress={() => props.onPress()}>
+      <Text style={styles.buttonText}>{props.text}</Text>
       <Image
         source={props.imageSource}
         style={styles.buttonImage as ImageStyle}
@@ -24,20 +27,29 @@ const AndroidButton: SFC<Props> = (props: Props) => {
     </TouchableOpacity>
   )
 }
-export default AndroidButton;
+export default IosButton;
+
+const imageSize = 36
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.primaryColorD,
-    elevation: 4,
+    flexDirection: 'row',
+    borderColor: colors.primaryColorD,
+    borderWidth: 2,
     padding: 16,
-    borderRadius: 40,
-    alignSelf: 'flex-end',
-    marginBottom: 12,
-    marginRight: 12
+    borderRadius: 24,
+    alignSelf: 'center',
+    alignItems: 'center',
   },
   buttonImage: {
-    width: 40,
-    height: 40
+    width: imageSize,
+    height: imageSize
+  },
+  buttonText: {
+    flex: 1,
+    fontSize: 22,
+    color: colors.primaryColorD,
+    textAlign: 'center',
+    marginLeft: imageSize
   }
 });
