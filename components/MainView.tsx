@@ -36,7 +36,6 @@ class MainView extends Component<Props> {
     const { hasCameraPermission, navigation } = this.props;
 
     if (navigation == undefined) {
-      console.warn('MainView: navigation prop is undefined');
       return;
     }
 

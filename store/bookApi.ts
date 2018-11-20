@@ -147,7 +147,6 @@ export function fetchBook(barCode: string): ThunkAction<void, undefined, undefin
       dispatch({ type: FETCH_BOOK_SUCCESS, payload });
     }
     catch(error) {
-      console.log(error);
       dispatch({ type: FETCH_ERROR, payload: error });
     }
   }     
@@ -166,15 +165,12 @@ export function fetchCitation(id: string):ThunkAction<void, ApplicationState, un
       }
 
       const data = await response.blob();
-      console.log('Citation fetched')
 
       const text = await readFile(data);
-      console.log(text);
 
       dispatch({ type: FETCH_CITATION_SUCCESS, payload: text });
     }
     catch (error) {
-      console.log(error);
       dispatch({ type: FETCH_ERROR, payload: error });
     }
   }

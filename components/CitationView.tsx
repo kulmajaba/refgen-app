@@ -37,7 +37,6 @@ class CitationView extends Component<Props> {
   _shareCitation() {
     const { citation } = this.props;
     if (citation === undefined) {
-      console.warn('Citation undefined');
       return;
     }
 

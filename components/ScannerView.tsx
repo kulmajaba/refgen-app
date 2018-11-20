@@ -48,7 +48,6 @@ class ScannerView extends Component<Props> {
     const { hasCameraPermission, isBusy } = this.props;
 
     if (hasCameraPermission !== true) { // Should never happen
-      console.warn('ScannerView: access to camera was not checked before.');
       return <Text>No access to camera</Text>;
     }
     
@@ -59,7 +58,6 @@ class ScannerView extends Component<Props> {
             isBusy ? // This will only prevent events when this view is focused
             undefined :
             (res: BarCodeScannerResult) => {
-              console.log(`Barcode ${res.data} read`)
               this.props.scanSuccess(res)
             }
           }
@@ -76,7 +74,6 @@ class ScannerView extends Component<Props> {
 
   _alertOkPressed() {
     if (this.props.navigation == undefined) {
-      console.warn('ScannerView: navigation prop is undefined');
       return;
     }
     // TODO: reactivate scanner when necessary
