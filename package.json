@@ -24,7 +24,7 @@
     "@types/expo": "^30.0.0",
     "@types/react": "^16.4.18",
     "@types/react-native": "^0.55.28",
-    "@types/react-redux": "^6.0.9",
+    "@types/react-redux": "^7.1.1",
     "react-native-typescript-transformer": "^1.2.10"
   }
 }
