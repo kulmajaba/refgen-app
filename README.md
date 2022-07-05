@@ -1,5 +1,7 @@
 # REFGEN
 
+**NOTE: This repsitory has been archived and will not be updated. React Native has moved on a lot since the development of this application and this code should not be used as reference material.**
+
 Refgen is a mobile application for scanning book barcodes and creating properly formatted citations out of them for you research paper.
 
 ## Contributing
